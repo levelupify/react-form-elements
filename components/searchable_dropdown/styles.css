@@ -1,0 +1,57 @@
+.lvlp-searchable-dropdown {
+  position: relative;
+
+  &.open {
+    .dropdown {
+      display: block;
+    }
+  }
+
+  .input-container {
+    position: relative;
+
+    input {
+      height: 50px;
+      line-height: 50px;
+      padding: 0 20px;
+    }
+
+    span {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 50px;
+      i {
+        position: absolute;
+        top: 17px;
+        right: 15px;
+        color: rgba(0, 0, 0, 0.2);
+      }
+    }
+
+  }
+
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    z-index: 100;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-top: none;
+    max-height: 400px;
+    overflow-y: scroll;
+
+    > * {
+      padding: 10px 20px;
+      &:hover, &.active {
+        background-color: rgba(0, 0, 100, 0.03);
+        cursor: pointer;
+      }
+    }
+  }
+
+}
