@@ -12,7 +12,9 @@ var config = {
   entry: setup.mainPath,
   output: {
     path: setup.buildPath,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    library: '', 
+    libraryTarget: 'commonjs',
   },
   module: {
     loaders: [
