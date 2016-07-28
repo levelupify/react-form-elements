@@ -4,9 +4,9 @@
   "description": "React Form Elements for Levelup",
   "private": true,
   "scripts": {
-    "watch": "node_modules/.bin/esw -w src",
-    "build": "node_modules/.bin/babel src --out-dir .",
-    "lint": "(node_modules/.bin/eslint src) || true",
+    "watch": "node_modules/.bin/esw -w src/components",
+    "build": "node_modules/.bin/babel src/components --out-dir dist",
+    "lint": "(node_modules/.bin/eslint src/components) || true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

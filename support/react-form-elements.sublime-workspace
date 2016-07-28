@@ -332,48 +332,87 @@
 	"buffers":
 	[
 		{
-			"contents": "import './styles.css';\n\nimport React, { Component } from 'react';\nimport keycode from 'keycode';\nimport {HOC} from 'formsy-react';\nimport {Icon} from 'react-font-awesome';\n\nclass SearchableDropdown extends Component {\n\n  state = {\n    open: false,\n    filter: null,\n    dropdownIndex: null,\n    closedByBlur: false,\n  };\n\n  componentWillMount() {\n    this.props.setValue(this.props.defaultValue || this.props.value || '');\n  }\n\n  componentWillReceiveProps() {\n    this.setState({\n      filter: null,\n      dropdownIndex: null,\n    });\n  }\n\n  handleInputClick = () => {\n    if (!this.state.open) {\n      this.setState({open: true, closedByBlur: false, filter: null, dropdownIndex: null});\n    }\n  };\n\n  // XXX: This is run before the blur logic, since blur has a timeout, but the blur is REGISTERED, \n  // so it will still fire later, thereby always closing it even if it was opened here\n  handleToggleClick = () => {\n    if (!this.state.open && !this.state.closedByBlur) {\n      this.setState({open: true, closedByBlur: false, filter: null, dropdownIndex: null}, () => {\n        this.refs.input.focus();\n      });\n    }\n  };\n\n  handleBlur = (ev) => {\n    this.setState({closedByBlur: true}, () => {\n      setTimeout(() => {\n        this.setState({open: false, filter: null, dropdownIndex: null});\n        if (this.props.onBlur) this.props.onBlur(ev);\n        setTimeout(() => {\n          this.setState({closedByBlur: false});\n        }, 200);\n      }, 10);\n    });\n  };\n\n  handleChange = (ev) => {\n    const value = ev.target.value;\n    // this.props.setValue(value);\n    this.setState({filter: value, open: true, dropdownIndex: 0});\n    if (this.props.onChange) this.props.onChange(value, this.props.dataSource);\n  };\n\n  handleItemClick = (item, ev) => {\n    this.selectItem(item);\n    ev.preventDefault();\n  };\n\n  selectItem = (item, closedByBlur, callback) => { // eslint-disable-line no-unused-vars\n    if (typeof closedByBlur === 'function') {\n      callback = closedByBlur;\n      closedByBlur = false;\n    }\n    this.setState({open: false, closedByBlur: closedByBlur, filter: null, dropdownIndex: null}, () => {\n      this.props.setValue(item.value);\n      if (this.props.onSelect) this.props.onSelect(item);\n      if (typeof callback === 'function') {\n        callback();\n      }\n    });\n  };\n\n  filter = (dataSource) => {\n    if (this.state.filter) {\n      const re = new RegExp(this.state.filter, 'i');\n      return dataSource.filter(i => { return re.test(i.text); });\n    } else {\n      return dataSource;\n    }\n  };\n\n  handleKeyDown = (ev) => {\n    const key = keycode(ev);\n    let items;\n    if (key === 'enter') {\n      items = this.filter(this.props.dataSource);\n      const item = items[this.state.dropdownIndex];\n      this.selectItem(item);\n      ev.preventDefault();\n    } else if (key === 'up') {\n      if (this.state.dropdownIndex) {\n        this.setState({dropdownIndex: this.state.dropdownIndex - 1, open: true});\n      }\n      ev.preventDefault();\n    } else if (key === 'down') {\n      items = this.filter(this.props.dataSource);\n      const newIndex = this.state.dropdownIndex === null ? 0 : this.state.dropdownIndex + 1;\n      if (this.state.dropdownIndex === null || this.state.dropdownIndex < (items.length - 1)) {\n        this.setState({dropdownIndex: newIndex, open: true});\n      }\n      ev.preventDefault();\n    } else if (key === 'esc') {\n      this.refs.input.blur();\n      ev.preventDefault();\n    }\n    if (this.props.onKeyDown) this.props.onKeyDown(ev, ev.currentTarget.value);\n  };\n\n  render() {\n    const dropdownItems = this.filter(this.props.dataSource).map((item, i) => {\n      const classes = this.state.dropdownIndex === i ? 'active' : '';\n      return <div className={classes} key={i} onClick={this.handleItemClick.bind(this, item)}>{item.text}</div>;\n    });\n\n    let classes = 'lvlp-searchable-dropdown';\n    if (this.state.open) {\n      classes += ' open';\n    }\n\n    const currentItem = this.props.dataSource.find(s => { return s.value === this.props.getValue(); });\n    const title = this.state.filter === null ? (currentItem ? currentItem.text : '') : this.state.filter;\n\n    return (\n      <div className={classes}>\n\n        <div className=\"input-container\">\n          <input ref=\"input\" \n                 type=\"text\" \n                 value={title} \n                 placeholder={this.props.placeholder} \n                 onBlur={this.handleBlur}\n                 onClick={this.handleInputClick}\n                 onKeyDown={this.handleKeyDown}\n                 onChange={this.handleChange} />\n\n          <span onClick={this.handleToggleClick}><Icon type=\"angle-down\" fixedWidth /></span>\n        </div>\n\n        <div className=\"dropdown\">\n          {dropdownItems}\n        </div>\n\n      </div>\n    );\n  }\n\n}\n\nexport default HOC(SearchableDropdown);\n",
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/components/searchable_dropdown/index.jsx",
-			"file_size": 4802,
-			"file_write_time": 131110736800000000,
-			"settings":
-			{
-				"buffer_size": 4802,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "/opt/dev/levelup/levelupify/react-form-elements/package.json",
 			"settings":
 			{
-				"buffer_size": 915,
+				"buffer_size": 1081,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/.eslintrc.js",
+			"contents": "## React Form Elements\n\nThis is a set of form elements for React implemented as [Formsy](https://github.com/christianalfoni/formsy-react) components.\n\n## Usage\nFirst, install the package:\n\n\n```js\nimport Textfield from 'react-form-elements/dist/textfield';\n```\n\nThen, in the `render`method:\n\n```html\n<Formsy.Form ...>\n  <Textfield ... />\n</Formsy.Form>\n```\n",
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/README.md",
+			"file_size": 327,
+			"file_write_time": 131141775190000000,
 			"settings":
 			{
-				"buffer_size": 1089,
+				"buffer_size": 356,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/.git/hooks/pre-commit",
+			"contents": "import './styles.css';\n\nimport React, { Component } from 'react';\nimport keycode from 'keycode';\nimport {HOC} from 'formsy-react';\nimport {Icon} from 'react-font-awesome';\n\nclass SearchableDropdown extends Component {\n\n  state = {\n    open: false,\n    filter: null,\n    dropdownIndex: null,\n    closedByBlur: false,\n  };\n\n  constructor(props) {\n    super(props);\n  }\n\n  componentWillMount() {\n    this.props.setValue(this.props.defaultValue || this.props.value || '');\n  }\n\n  componentWillReceiveProps() {\n    this.setState({\n      filter: null,\n      dropdownIndex: null,\n    });\n  }\n\n  handleInputClick = () => {\n    if (!this.state.open) {\n      this.setState({open: true, closedByBlur: false, filter: null, dropdownIndex: null});\n    }\n  };\n\n  // XXX: This is run before the blur logic, since blur has a timeout, but the blur is REGISTERED, \n  // so it will still fire later, thereby always closing it even if it was opened here\n  handleToggleClick = () => {\n    if (!this.state.open && !this.state.closedByBlur) {\n      this.setState({open: true, closedByBlur: false, filter: null, dropdownIndex: null}, () => {\n        this.refs.input.focus();\n      });\n    }\n  };\n\n  handleBlur = (ev) => {\n    this.setState({closedByBlur: true}, () => {\n      setTimeout(() => {\n        this.setState({open: false, filter: null, dropdownIndex: null});\n        if (this.props.onBlur) this.props.onBlur(ev);\n        setTimeout(() => {\n          this.setState({closedByBlur: false});\n        }, 200);\n      }, 10);\n    });\n  };\n\n  handleChange = (ev) => {\n    const value = ev.target.value;\n    // this.props.setValue(value);\n    this.setState({filter: value, open: true, dropdownIndex: 0});\n    if (this.props.onChange) this.props.onChange(value, this.props.dataSource);\n  };\n\n  handleItemClick = (item, ev) => {\n    this.selectItem(item);\n    ev.preventDefault();\n  };\n\n  selectItem = (item, closedByBlur, callback) => { // eslint-disable-line no-unused-vars\n    if (typeof closedByBlur === 'function') {\n      callback = closedByBlur;\n      closedByBlur = false;\n    }\n    this.setState({open: false, closedByBlur: closedByBlur, filter: null, dropdownIndex: null}, () => {\n      this.props.setValue(item.value);\n      if (this.props.onSelect) this.props.onSelect(item);\n      if (typeof callback === 'function') {\n        callback();\n      }\n    });\n  };\n\n  filter = (dataSource) => {\n    if (this.state.filter) {\n      const re = new RegExp(this.state.filter, 'i');\n      return dataSource.filter(i => { return re.test(i.text); });\n    } else {\n      return dataSource;\n    }\n  };\n\n  handleKeyDown = (ev) => {\n    const key = keycode(ev);\n    let items;\n    if (key === 'enter') {\n      items = this.filter(this.props.dataSource);\n      const item = items[this.state.dropdownIndex];\n      this.selectItem(item);\n      ev.preventDefault();\n    } else if (key === 'up') {\n      if (this.state.dropdownIndex) {\n        this.setState({dropdownIndex: this.state.dropdownIndex - 1, open: true});\n      }\n      ev.preventDefault();\n    } else if (key === 'down') {\n      items = this.filter(this.props.dataSource);\n      const newIndex = this.state.dropdownIndex === null ? 0 : this.state.dropdownIndex + 1;\n      if (this.state.dropdownIndex === null || this.state.dropdownIndex < (items.length - 1)) {\n        this.setState({dropdownIndex: newIndex, open: true});\n      }\n      ev.preventDefault();\n    } else if (key === 'esc') {\n      this.refs.input.blur();\n      ev.preventDefault();\n    }\n    if (this.props.onKeyDown) this.props.onKeyDown(ev, ev.currentTarget.value);\n  };\n\n  render() {\n    const dropdownItems = this.filter(this.props.dataSource).map((item, i) => {\n      const classes = this.state.dropdownIndex === i ? 'active' : '';\n      return <div className={classes} key={i} onClick={this.handleItemClick.bind(this, item)}>{item.text}</div>;\n    });\n\n    let classes = 'lvlp-searchable-dropdown';\n    if (this.state.open) {\n      classes += ' open';\n    }\n\n    const currentItem = this.props.dataSource.find(s => { return s.value === this.props.getValue(); });\n    const title = this.state.filter === null ? (currentItem ? currentItem.text : '') : this.state.filter;\n\n    return (\n      <div className={classes}>\n\n        <div className=\"input-container\">\n          <input ref=\"input\" \n                 type=\"text\" \n                 value={title} \n                 placeholder={this.props.placeholder} \n                 onBlur={this.handleBlur}\n                 onClick={this.handleInputClick}\n                 onKeyDown={this.handleKeyDown}\n                 onChange={this.handleChange} />\n\n          <span onClick={this.handleToggleClick}><Icon type=\"angle-down\" fixedWidth /></span>\n        </div>\n\n        <div className=\"dropdown\">\n          {dropdownItems}\n        </div>\n\n      </div>\n    );\n  }\n\n}\n\nexport default HOC(SearchableDropdown);\n",
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/searchable_dropdown/index.jsx",
+			"file_size": 4848,
+			"file_write_time": 131141360710000000,
 			"settings":
 			{
-				"buffer_size": 44,
+				"buffer_size": 4848,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": ".lvlp-searchable-dropdown {\n  position: relative;\n\n  &.open {\n    .dropdown {\n      display: block;\n    }\n  }\n\n  .input-container {\n    position: relative;\n\n    input {\n      height: 50px;\n      line-height: 50px;\n      padding: 0 20px;\n    }\n\n    span {\n      position: absolute;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      width: 50px;\n      i {\n        position: absolute;\n        top: 17px;\n        right: 15px;\n        color: rgba(0, 0, 0, 0.2);\n      }\n    }\n\n  }\n\n  .dropdown {\n    display: none;\n    position: absolute;\n    top: 100%;\n    left: 0;\n    right: 0;\n    background-color: #fff;\n    z-index: 100;\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-top: none;\n    max-height: 400px;\n    overflow-y: scroll;\n\n    > * {\n      padding: 10px 20px;\n      &:hover, &.active {\n        background-color: rgba(0, 0, 100, 0.03);\n        cursor: pointer;\n      }\n    }\n  }\n\n}\n",
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/components/searchable_dropdown/styles.css",
-			"file_size": 894,
-			"file_write_time": 131110525250000000,
+			"contents": "import './styles.css';\n\nimport React, { Component } from 'react';\nimport {HOC} from 'formsy-react';\n\nclass Textfield extends Component {\n\n  handleChange = (ev) => {\n    const value = ev.target.value;\n    this.props.setValue(value);\n    if (this.props.onChange) this.props.onChange(value);\n  };\n\n  handleBlur = (ev) => {\n    if (this.props.onBlur) this.props.onBlur(ev);\n  };\n\n  handleClick = (ev) => {\n    if (this.props.onClick) this.props.onClick(ev);\n  };\n\n  render() {\n    return (\n      <input {...this.props}\n             onBlur={this.handleBlur}\n             onClick={this.handleClick}\n             onChange={this.handleChange} />\n    );\n  }\n\n}\n\nexport default HOC(Textfield);\n",
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textfield/index.jsx",
+			"file_size": 684,
+			"file_write_time": 131141755780000000,
 			"settings":
 			{
-				"buffer_size": 894,
+				"buffer_size": 684,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "import './styles.css';\n\nimport React, { Component } from 'react';\nimport {HOC} from 'formsy-react';\n\nclass Checkbox extends Component {\n\n  handleChange = (ev) => {\n    const value = ev.target.value;\n    this.props.setValue(value);\n    if (this.props.onChange) this.props.onChange(value);\n  };\n\n  handleClick = (ev) => {\n    if (this.props.onClick) this.props.onClick(ev);\n  };\n\n  render() {\n    return (\n      <input {...this.props}\n             type=\"checkbox\"\n             onClick={this.handleClick}\n             onChange={this.handleChange} />\n    );\n  }\n\n}\n\nexport default HOC(Checkbox);\n",
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/checkbox/index.jsx",
+			"file_size": 592,
+			"file_write_time": 131141755440000000,
+			"settings":
+			{
+				"buffer_size": 592,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "import './styles.css';\n\nimport React, { Component } from 'react';\nimport {HOC} from 'formsy-react';\n\nclass Textarea extends Component {\n\n  handleChange = (ev) => {\n    const value = ev.target.value;\n    this.props.setValue(value);\n    if (this.props.onChange) this.props.onChange(value);\n  };\n\n  handleClick = (ev) => {\n    if (this.props.onClick) this.props.onClick(ev);\n  };\n\n  render() {\n    return (\n      <textarea {...this.props}\n                onClick={this.handleClick}\n                onChange={this.handleChange} />\n    );\n  }\n\n}\n\nexport default HOC(Textarea);\n",
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textarea/index.jsx",
+			"file_size": 572,
+			"file_write_time": 131141754540000000,
+			"settings":
+			{
+				"buffer_size": 572,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": ".lvlp-textarea {\n}\n",
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textarea/styles.css",
+			"file_size": 19,
+			"file_write_time": 131141754730000000,
+			"settings":
+			{
+				"buffer_size": 19,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": ".lvlp-dropdown {\n}\n",
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/dropdown/styles.css",
+			"file_size": 19,
+			"file_write_time": 131141755080000000,
+			"settings":
+			{
+				"buffer_size": 19,
 				"line_ending": "Unix"
 			}
 		}
@@ -480,7 +519,13 @@
 	],
 	"file_history":
 	[
+		"/opt/dev/levelup/levelupify/react-form-elements/.eslintrc.js",
+		"/opt/dev/levelup/levelupify/react-form-elements/.babelrc",
 		"/opt/dev/levelup/levelupify/react-form-elements/.git/hooks/pre-commit",
+		"/opt/dev/levelup/levelupify/react-form-elements/components/searchable_dropdown/styles.css",
+		"/opt/dev/levelup/levelupify/react-form-elements/src/checkbox/styles.css",
+		"/opt/dev/levelup/levelupify/react-form-elements/src/textfield/styles.css",
+		"/opt/dev/levelup/levelupify/react-form-elements/components/searchable_dropdown/index.jsx",
 		"/Users/stian/dev/node/hma-admin-web/client/components/formsy_mui_autocomplete/index.jsx",
 		"/opt/dev/levelup/levelup-clients/hma-admin-web/support/hma-admin-web.sublime-project",
 		"/Users/stian/dev/node/hma-admin-web/client/components/searchable_dropdown/index.jsx",
@@ -601,13 +646,7 @@
 		"/Users/stian/dev/node/hma-user-system/app/stylesheets/main.css",
 		"/Users/stian/dev/node/hma-user-system/app/app.js",
 		"/Users/stian/dev/node/hma-user-system/views/index.ejs",
-		"/Users/stian/dev/node/hma-user-system/lib/dev/bundle.js",
-		"/Users/stian/dev/node/hma-user-system/config/default.js",
-		"/Users/stian/dev/node/hma-user-system/lib/server/init_routes.js",
-		"/Users/stian/dev/node/hma-user-system/lib/server/init.js",
-		"/Users/stian/dev/node/hma-user-system/docs/README.md",
-		"/Users/stian/dev/node/hma-user-system/docs/background/database-tables.md",
-		"/Users/stian/dev/node/hma-user-system/docs/data_model.md"
+		"/Users/stian/dev/node/hma-user-system/lib/dev/bundle.js"
 	],
 	"find":
 	{
@@ -901,57 +940,24 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/components/searchable_dropdown/index.jsx",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4802,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								66,
-								66
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "/opt/dev/levelup/levelupify/react-form-elements/package.json",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 915,
+						"buffer_size": 1081,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								188,
-								188
+								269,
+								269
 							]
 						],
 						"settings":
@@ -971,20 +977,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/.eslintrc.js",
+					"buffer": 1,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/README.md",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1089,
+						"buffer_size": 356,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								990,
-								990
+								188,
+								188
 							]
 						],
 						"settings":
@@ -992,55 +998,22 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Markdown Extended/Syntaxes/Markdown Extended.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 175.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/.git/hooks/pre-commit",
+					"buffer": 2,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/searchable_dropdown/index.jsx",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 44,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								43,
-								43
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/components/searchable_dropdown/styles.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 894,
+						"buffer_size": 4848,
 						"regions":
 						{
 						},
@@ -1056,9 +1029,170 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/Sass/Syntaxes/Sass.tmLanguage",
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textfield/index.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 684,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								515,
+								515
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/checkbox/index.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 592,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								433,
+								462
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textarea/index.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 572,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								526,
+								526
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textarea/styles.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 19,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								14,
+								14
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Sass/Syntaxes/Sass.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/dropdown/styles.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 19,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Sass/Syntaxes/Sass.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1123,16 +1257,56 @@
 		"selected_items":
 		[
 			[
-				"eslint",
-				".eslintrc.js"
+				"read",
+				"README.md"
 			],
 			[
 				"packa",
 				"package.json"
 			],
 			[
+				"textfield",
+				"src/textfield/index.jsx"
+			],
+			[
+				"checkbox",
+				"src/checkbox/index.jsx"
+			],
+			[
 				"styles",
-				"components/searchable_dropdown/styles.css"
+				"/opt/dev/levelup/levelupify/react-form-elements/components/searchable_dropdown/styles.css"
+			],
+			[
+				"textarea",
+				"src/textarea/index.jsx"
+			],
+			[
+				"textfieinde",
+				"src/textfield/index.jsx"
+			],
+			[
+				"checkinde",
+				"src/checkbox/index.jsx"
+			],
+			[
+				"check",
+				"src/checkbox/styles.css"
+			],
+			[
+				"index",
+				"src/textfield/index.jsx"
+			],
+			[
+				"inde",
+				"src/searchable_dropdown/index.jsx"
+			],
+			[
+				"babel",
+				".babelrc"
+			],
+			[
+				"eslint",
+				".eslintrc.js"
 			],
 			[
 				"search",
@@ -1593,46 +1767,6 @@
 			[
 				"util",
 				"lib/utils.js"
-			],
-			[
-				"transform",
-				"lib/transformer.js"
-			],
-			[
-				"go",
-				"geo.lst"
-			],
-			[
-				"sold",
-				"sold.lst"
-			],
-			[
-				"geol",
-				"geo.lst"
-			],
-			[
-				"transf",
-				"lib/transformer.js"
-			],
-			[
-				"translator",
-				"lib/translator.js"
-			],
-			[
-				"index",
-				"index.js"
-			],
-			[
-				"cache",
-				"work/cache.json"
-			],
-			[
-				"tranform",
-				"lib/transformer.js"
-			],
-			[
-				"copier",
-				"lib/copier.js"
 			]
 		],
 		"width": 0.0
@@ -1640,9 +1774,13 @@
 	"select_project":
 	{
 		"height": 500.0,
-		"last_filter": "",
+		"last_filter": "login",
 		"selected_items":
 		[
+			[
+				"login",
+				"/opt/dev/levelup/levelupify/levelup-login-web/support/levelup-login-web.sublime-project"
+			],
 			[
 				"",
 				"/opt/dev/levelup/levelupify/file-system-core/support/file-system-core.sublime-project"
@@ -1658,10 +1796,6 @@
 			[
 				"user system",
 				"/opt/dev/levelup/levelup-clients/hma-user-system/support/hma-user-system.sublime-project"
-			],
-			[
-				"login",
-				"/opt/dev/levelup/levelupify/levelup-login-web/support/levelup-login-web.sublime-project"
 			],
 			[
 				"login web",
