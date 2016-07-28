@@ -20,8 +20,10 @@ class Textfield extends Component {
   };
 
   render() {
+    const classes = `lvlp-textfield ${this.props.className ? this.props.className : ''}`;
     return (
       <input {...this.props}
+             className={classes}
              onBlur={this.handleBlur}
              onClick={this.handleClick}
              onChange={this.handleChange} />

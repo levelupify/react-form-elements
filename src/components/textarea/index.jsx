@@ -16,8 +16,10 @@ class Textarea extends Component {
   };
 
   render() {
+    const classes = `lvlp-textarea ${this.props.className ? this.props.className : ''}`;
     return (
       <textarea {...this.props}
+                className={classes}
                 onClick={this.handleClick}
                 onChange={this.handleChange} />
     );

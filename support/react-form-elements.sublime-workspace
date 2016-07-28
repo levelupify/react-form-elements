@@ -332,87 +332,85 @@
 	"buffers":
 	[
 		{
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/checkbox/index.jsx",
+			"settings":
+			{
+				"buffer_size": 714,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/textfield/index.jsx",
+			"settings":
+			{
+				"buffer_size": 807,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/dropdown/index.jsx",
+			"settings":
+			{
+				"buffer_size": 927,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/searchable_dropdown/index.jsx",
+			"settings":
+			{
+				"buffer_size": 4900,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "/opt/dev/levelup/levelupify/react-form-elements/package.json",
 			"settings":
 			{
-				"buffer_size": 1081,
+				"buffer_size": 1107,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "## React Form Elements\n\nThis is a set of form elements for React implemented as [Formsy](https://github.com/christianalfoni/formsy-react) components.\n\n## Usage\nFirst, install the package:\n\n\n```js\nimport Textfield from 'react-form-elements/dist/textfield';\n```\n\nThen, in the `render`method:\n\n```html\n<Formsy.Form ...>\n  <Textfield ... />\n</Formsy.Form>\n```\n",
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/README.md",
-			"file_size": 327,
-			"file_write_time": 131141775190000000,
+			"contents": "module.exports = {\n  Textfield:          require('./src/components/textfield'),\n  Textarea:           require('./src/components/textarea'),\n  Checkbox:           require('./src/components/checkbox'),\n  Dropdown:           require('./src/components/dropdown'),\n  SearchableDropdown: require('./src/components/searchable_dropdown'),\n};\n",
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/index.js",
+			"file_size": 334,
+			"file_write_time": 131141873680000000,
 			"settings":
 			{
-				"buffer_size": 356,
+				"buffer_size": 334,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "import './styles.css';\n\nimport React, { Component } from 'react';\nimport keycode from 'keycode';\nimport {HOC} from 'formsy-react';\nimport {Icon} from 'react-font-awesome';\n\nclass SearchableDropdown extends Component {\n\n  state = {\n    open: false,\n    filter: null,\n    dropdownIndex: null,\n    closedByBlur: false,\n  };\n\n  constructor(props) {\n    super(props);\n  }\n\n  componentWillMount() {\n    this.props.setValue(this.props.defaultValue || this.props.value || '');\n  }\n\n  componentWillReceiveProps() {\n    this.setState({\n      filter: null,\n      dropdownIndex: null,\n    });\n  }\n\n  handleInputClick = () => {\n    if (!this.state.open) {\n      this.setState({open: true, closedByBlur: false, filter: null, dropdownIndex: null});\n    }\n  };\n\n  // XXX: This is run before the blur logic, since blur has a timeout, but the blur is REGISTERED, \n  // so it will still fire later, thereby always closing it even if it was opened here\n  handleToggleClick = () => {\n    if (!this.state.open && !this.state.closedByBlur) {\n      this.setState({open: true, closedByBlur: false, filter: null, dropdownIndex: null}, () => {\n        this.refs.input.focus();\n      });\n    }\n  };\n\n  handleBlur = (ev) => {\n    this.setState({closedByBlur: true}, () => {\n      setTimeout(() => {\n        this.setState({open: false, filter: null, dropdownIndex: null});\n        if (this.props.onBlur) this.props.onBlur(ev);\n        setTimeout(() => {\n          this.setState({closedByBlur: false});\n        }, 200);\n      }, 10);\n    });\n  };\n\n  handleChange = (ev) => {\n    const value = ev.target.value;\n    // this.props.setValue(value);\n    this.setState({filter: value, open: true, dropdownIndex: 0});\n    if (this.props.onChange) this.props.onChange(value, this.props.dataSource);\n  };\n\n  handleItemClick = (item, ev) => {\n    this.selectItem(item);\n    ev.preventDefault();\n  };\n\n  selectItem = (item, closedByBlur, callback) => { // eslint-disable-line no-unused-vars\n    if (typeof closedByBlur === 'function') {\n      callback = closedByBlur;\n      closedByBlur = false;\n    }\n    this.setState({open: false, closedByBlur: closedByBlur, filter: null, dropdownIndex: null}, () => {\n      this.props.setValue(item.value);\n      if (this.props.onSelect) this.props.onSelect(item);\n      if (typeof callback === 'function') {\n        callback();\n      }\n    });\n  };\n\n  filter = (dataSource) => {\n    if (this.state.filter) {\n      const re = new RegExp(this.state.filter, 'i');\n      return dataSource.filter(i => { return re.test(i.text); });\n    } else {\n      return dataSource;\n    }\n  };\n\n  handleKeyDown = (ev) => {\n    const key = keycode(ev);\n    let items;\n    if (key === 'enter') {\n      items = this.filter(this.props.dataSource);\n      const item = items[this.state.dropdownIndex];\n      this.selectItem(item);\n      ev.preventDefault();\n    } else if (key === 'up') {\n      if (this.state.dropdownIndex) {\n        this.setState({dropdownIndex: this.state.dropdownIndex - 1, open: true});\n      }\n      ev.preventDefault();\n    } else if (key === 'down') {\n      items = this.filter(this.props.dataSource);\n      const newIndex = this.state.dropdownIndex === null ? 0 : this.state.dropdownIndex + 1;\n      if (this.state.dropdownIndex === null || this.state.dropdownIndex < (items.length - 1)) {\n        this.setState({dropdownIndex: newIndex, open: true});\n      }\n      ev.preventDefault();\n    } else if (key === 'esc') {\n      this.refs.input.blur();\n      ev.preventDefault();\n    }\n    if (this.props.onKeyDown) this.props.onKeyDown(ev, ev.currentTarget.value);\n  };\n\n  render() {\n    const dropdownItems = this.filter(this.props.dataSource).map((item, i) => {\n      const classes = this.state.dropdownIndex === i ? 'active' : '';\n      return <div className={classes} key={i} onClick={this.handleItemClick.bind(this, item)}>{item.text}</div>;\n    });\n\n    let classes = 'lvlp-searchable-dropdown';\n    if (this.state.open) {\n      classes += ' open';\n    }\n\n    const currentItem = this.props.dataSource.find(s => { return s.value === this.props.getValue(); });\n    const title = this.state.filter === null ? (currentItem ? currentItem.text : '') : this.state.filter;\n\n    return (\n      <div className={classes}>\n\n        <div className=\"input-container\">\n          <input ref=\"input\" \n                 type=\"text\" \n                 value={title} \n                 placeholder={this.props.placeholder} \n                 onBlur={this.handleBlur}\n                 onClick={this.handleInputClick}\n                 onKeyDown={this.handleKeyDown}\n                 onChange={this.handleChange} />\n\n          <span onClick={this.handleToggleClick}><Icon type=\"angle-down\" fixedWidth /></span>\n        </div>\n\n        <div className=\"dropdown\">\n          {dropdownItems}\n        </div>\n\n      </div>\n    );\n  }\n\n}\n\nexport default HOC(SearchableDropdown);\n",
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/searchable_dropdown/index.jsx",
-			"file_size": 4848,
-			"file_write_time": 131141360710000000,
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/dev/webpack-common-setup.js",
 			"settings":
 			{
-				"buffer_size": 4848,
+				"buffer_size": 407,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "import './styles.css';\n\nimport React, { Component } from 'react';\nimport {HOC} from 'formsy-react';\n\nclass Textfield extends Component {\n\n  handleChange = (ev) => {\n    const value = ev.target.value;\n    this.props.setValue(value);\n    if (this.props.onChange) this.props.onChange(value);\n  };\n\n  handleBlur = (ev) => {\n    if (this.props.onBlur) this.props.onBlur(ev);\n  };\n\n  handleClick = (ev) => {\n    if (this.props.onClick) this.props.onClick(ev);\n  };\n\n  render() {\n    return (\n      <input {...this.props}\n             onBlur={this.handleBlur}\n             onClick={this.handleClick}\n             onChange={this.handleChange} />\n    );\n  }\n\n}\n\nexport default HOC(Textfield);\n",
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textfield/index.jsx",
-			"file_size": 684,
-			"file_write_time": 131141755780000000,
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/dev/webpack.config.js",
 			"settings":
 			{
-				"buffer_size": 684,
+				"buffer_size": 2052,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "import './styles.css';\n\nimport React, { Component } from 'react';\nimport {HOC} from 'formsy-react';\n\nclass Checkbox extends Component {\n\n  handleChange = (ev) => {\n    const value = ev.target.value;\n    this.props.setValue(value);\n    if (this.props.onChange) this.props.onChange(value);\n  };\n\n  handleClick = (ev) => {\n    if (this.props.onClick) this.props.onClick(ev);\n  };\n\n  render() {\n    return (\n      <input {...this.props}\n             type=\"checkbox\"\n             onClick={this.handleClick}\n             onChange={this.handleChange} />\n    );\n  }\n\n}\n\nexport default HOC(Checkbox);\n",
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/checkbox/index.jsx",
-			"file_size": 592,
-			"file_write_time": 131141755440000000,
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/dev/webpack.production.config.js",
 			"settings":
 			{
-				"buffer_size": 592,
+				"buffer_size": 805,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "import './styles.css';\n\nimport React, { Component } from 'react';\nimport {HOC} from 'formsy-react';\n\nclass Textarea extends Component {\n\n  handleChange = (ev) => {\n    const value = ev.target.value;\n    this.props.setValue(value);\n    if (this.props.onChange) this.props.onChange(value);\n  };\n\n  handleClick = (ev) => {\n    if (this.props.onClick) this.props.onClick(ev);\n  };\n\n  render() {\n    return (\n      <textarea {...this.props}\n                onClick={this.handleClick}\n                onChange={this.handleChange} />\n    );\n  }\n\n}\n\nexport default HOC(Textarea);\n",
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textarea/index.jsx",
-			"file_size": 572,
-			"file_write_time": 131141754540000000,
+			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/textarea/index.jsx",
 			"settings":
 			{
-				"buffer_size": 572,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": ".lvlp-textarea {\n}\n",
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textarea/styles.css",
-			"file_size": 19,
-			"file_write_time": 131141754730000000,
-			"settings":
-			{
-				"buffer_size": 19,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": ".lvlp-dropdown {\n}\n",
-			"file": "/opt/dev/levelup/levelupify/react-form-elements/src/dropdown/styles.css",
-			"file_size": 19,
-			"file_write_time": 131141755080000000,
-			"settings":
-			{
-				"buffer_size": 19,
+				"buffer_size": 697,
 				"line_ending": "Unix"
 			}
 		}
@@ -519,6 +517,16 @@
 	],
 	"file_history":
 	[
+		"/opt/dev/levelup/levelupify/react-form-elements/src/dropdown/styles.css",
+		"/opt/dev/levelup/levelupify/react-form-elements/src/textarea/styles.css",
+		"/opt/dev/levelup/levelupify/react-form-elements/src/textarea/index.jsx",
+		"/opt/dev/levelup/levelupify/react-form-elements/src/checkbox/index.jsx",
+		"/opt/dev/levelup/levelupify/react-form-elements/src/textfield/index.jsx",
+		"/opt/dev/levelup/levelupify/react-form-elements/src/searchable_dropdown/index.jsx",
+		"/opt/dev/levelup/levelupify/react-form-elements/package.json",
+		"/opt/dev/levelup/levelupify/react-form-elements/README.md",
+		"/opt/dev/levelup/levelupify/react-form-elements/support/react-form-elements.sublime-project",
+		"/opt/dev/levelup/levelupify/react-form-elements/dist/textfield/index.js",
 		"/opt/dev/levelup/levelupify/react-form-elements/.eslintrc.js",
 		"/opt/dev/levelup/levelupify/react-form-elements/.babelrc",
 		"/opt/dev/levelup/levelupify/react-form-elements/.git/hooks/pre-commit",
@@ -636,17 +644,7 @@
 		"/Users/stian/dev/php/craft/roisland-main-web/react/components/datepicker.jsx",
 		"/Users/stian/dev/php/craft/roisland-main-web/react/input.jsx",
 		"/Users/stian/dev/php/craft/roisland-main-web/public/app/sass/components/_site-search.scss",
-		"/Users/stian/dev/php/craft/roisland-main-web/public/build/bundle.js",
-		"/Users/stian/dev/node/hma-user-system/db/data.sql",
-		"/Users/stian/dev/node/hma-user-system/docs/background/initial-spec-from-client.md",
-		"/Users/stian/dev/node/hma-user-system/docs/postgres.md",
-		"/Users/stian/dev/node/hma-user-system/README.md",
-		"/Users/stian/dev/node/hma-user-system/dev/webpack.config.js",
-		"/Users/stian/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
-		"/Users/stian/dev/node/hma-user-system/app/stylesheets/main.css",
-		"/Users/stian/dev/node/hma-user-system/app/app.js",
-		"/Users/stian/dev/node/hma-user-system/views/index.ejs",
-		"/Users/stian/dev/node/hma-user-system/lib/dev/bundle.js"
+		"/Users/stian/dev/php/craft/roisland-main-web/public/build/bundle.js"
 	],
 	"find":
 	{
@@ -931,7 +929,7 @@
 			"\\n",
 			", args, {"
 		],
-		"reverse": false,
+		"reverse": true,
 		"show_context": true,
 		"use_buffer2": true,
 		"whole_word": false,
@@ -940,24 +938,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 8,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/package.json",
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/checkbox/index.jsx",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1081,
+						"buffer_size": 714,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								269,
-								269
+								522,
+								555
 							]
 						],
 						"settings":
@@ -965,7 +963,7 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
@@ -973,55 +971,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/README.md",
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/textfield/index.jsx",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 356,
+						"buffer_size": 807,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								188,
-								188
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/Markdown Extended/Syntaxes/Markdown Extended.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/searchable_dropdown/index.jsx",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4848,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
+								605,
+								638
 							]
 						],
 						"settings":
@@ -1041,86 +1008,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textfield/index.jsx",
+					"buffer": 2,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/dropdown/index.jsx",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 684,
+						"buffer_size": 927,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								515,
-								515
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/checkbox/index.jsx",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 592,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								433,
-								462
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textarea/index.jsx",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 572,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								526,
-								526
+								473,
+								562
 							]
 						],
 						"settings":
@@ -1140,20 +1041,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/textarea/styles.css",
+					"buffer": 3,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/searchable_dropdown/index.jsx",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 19,
+						"buffer_size": 4900,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								14,
-								14
+								66,
+								66
 							]
 						],
 						"settings":
@@ -1161,7 +1062,9 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/Sass/Syntaxes/Sass.tmLanguage"
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1171,20 +1074,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 7,
-					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/dropdown/styles.css",
+					"buffer": 4,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/package.json",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 19,
+						"buffer_size": 1107,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								128,
+								128
 							]
 						],
 						"settings":
@@ -1192,13 +1095,178 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/Sass/Syntaxes/Sass.tmLanguage"
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/index.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 334,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								76,
+								76
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/dev/webpack-common-setup.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 407,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								304,
+								304
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/dev/webpack.config.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2052,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								197,
+								197
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/dev/webpack.production.config.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 805,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								261,
+								261
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "/opt/dev/levelup/levelupify/react-form-elements/src/components/textarea/index.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 697,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								528,
+								528
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
 					"type": "text"
 				}
 			]
@@ -1257,16 +1325,48 @@
 		"selected_items":
 		[
 			[
-				"read",
-				"README.md"
+				"webpack",
+				"dev/webpack.production.config.js"
+			],
+			[
+				"common",
+				"dev/webpack-common-setup.js"
+			],
+			[
+				"indexjs",
+				"index.js"
 			],
 			[
 				"packa",
 				"package.json"
 			],
 			[
+				"searchable",
+				"src/components/searchable_dropdown/index.jsx"
+			],
+			[
+				"dropdown",
+				"src/components/dropdown/index.jsx"
+			],
+			[
+				"textarea",
+				"src/components/textarea/index.jsx"
+			],
+			[
 				"textfield",
-				"src/textfield/index.jsx"
+				"src/components/textfield/index.jsx"
+			],
+			[
+				"index",
+				"src/components/checkbox/index.jsx"
+			],
+			[
+				"project",
+				"support/react-form-elements.sublime-project"
+			],
+			[
+				"read",
+				"README.md"
 			],
 			[
 				"checkbox",
@@ -1275,10 +1375,6 @@
 			[
 				"styles",
 				"/opt/dev/levelup/levelupify/react-form-elements/components/searchable_dropdown/styles.css"
-			],
-			[
-				"textarea",
-				"src/textarea/index.jsx"
 			],
 			[
 				"textfieinde",
@@ -1291,10 +1387,6 @@
 			[
 				"check",
 				"src/checkbox/styles.css"
-			],
-			[
-				"index",
-				"src/textfield/index.jsx"
 			],
 			[
 				"inde",
@@ -1311,10 +1403,6 @@
 			[
 				"search",
 				"components/searchable_dropdown/index.jsx"
-			],
-			[
-				"dropdown",
-				"client/components/searchable_dropdown/index.jsx"
 			],
 			[
 				"listitem",
@@ -1491,10 +1579,6 @@
 			[
 				"clieut",
 				"client/lib/utils.js"
-			],
-			[
-				"project",
-				"support/hma-admin-web.sublime-project"
 			],
 			[
 				"formsy",
@@ -1713,10 +1797,6 @@
 				"server/lib/init_routes.js"
 			],
 			[
-				"webpack",
-				"dev/webpack.config.js"
-			],
-			[
 				"boot",
 				"server/lib/boot.js"
 			],
@@ -1755,18 +1835,6 @@
 			[
 				"unpack",
 				"lib/unpacker.js"
-			],
-			[
-				"downlo",
-				"lib/downloader.js"
-			],
-			[
-				"downloader",
-				"lib/downloader.js"
-			],
-			[
-				"util",
-				"lib/utils.js"
 			]
 		],
 		"width": 0.0
@@ -1774,9 +1842,13 @@
 	"select_project":
 	{
 		"height": 500.0,
-		"last_filter": "login",
+		"last_filter": "admin",
 		"selected_items":
 		[
+			[
+				"admin",
+				"/opt/dev/levelup/levelup-clients/hma-admin-web/support/hma-admin-web.sublime-project"
+			],
 			[
 				"login",
 				"/opt/dev/levelup/levelupify/levelup-login-web/support/levelup-login-web.sublime-project"

@@ -20,13 +20,19 @@ class Textfield extends Component {
   };
 
   render() {
+    const classes = `lvlp-dropdown ${this.props.className ? this.props.className : ''}`;
     return (
-      <input {...this.props}
-             value={this.props.value} 
-             placeholder={this.props.placeholder} 
-             onBlur={this.handleBlur}
-             onClick={this.handleClick}
-             onChange={this.handleChange} />
+      <select 
+        {...this.props}
+        className={classes}
+        value={this.props.value} 
+        placeholder={this.props.placeholder} 
+        onBlur={this.handleBlur}
+        onClick={this.handleClick}
+        onChange={this.handleChange}
+      >
+        {this.props.children}
+      </select>
     );
   }
 

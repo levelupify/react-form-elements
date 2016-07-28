@@ -125,7 +125,7 @@ class SearchableDropdown extends Component {
       return <div className={classes} key={i} onClick={this.handleItemClick.bind(this, item)}>{item.text}</div>;
     });
 
-    let classes = 'lvlp-searchable-dropdown';
+    let classes = `lvlp-searchable-dropdown ${this.props.className ? this.props.className : ''}`;
     if (this.state.open) {
       classes += ' open';
     }

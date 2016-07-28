@@ -2,7 +2,7 @@
   "folders": [
     {
       "path": "..",
-      "folder_exclude_patterns": ["node_modules", "public/build"],
+      "folder_exclude_patterns": ["node_modules", "dist"],
       "file_exclude_patterns": ["*.sublime-workspace"]
     }
   ],
