@@ -5520,6 +5520,7 @@
 	    value: function render() {
 	      var classes = 'lvlp-checkbox ' + (this.props.className ? this.props.className : '');
 	      return _react2.default.createElement('input', _extends({}, this.props, {
+	        checked: this.getValue(),
 	        className: classes,
 	        type: 'checkbox',
 	        onClick: this.handleClick,

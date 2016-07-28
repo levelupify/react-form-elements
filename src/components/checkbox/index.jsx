@@ -19,6 +19,7 @@ class Checkbox extends Component {
     const classes = `lvlp-checkbox ${this.props.className ? this.props.className : ''}`;
     return (
       <input {...this.props}
+             checked={this.getValue()}
              className={classes}
              type="checkbox"
              onClick={this.handleClick}
