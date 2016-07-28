@@ -1,1 +1,1 @@
-require('./intermediate');
+module.exports = require('./intermediate');
