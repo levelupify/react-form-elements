@@ -46,12 +46,51 @@
 
 	'use strict';
 	
-	module.exports = {
-	  Textfield: __webpack_require__(1),
-	  Textarea: __webpack_require__(45),
-	  Checkbox: __webpack_require__(48),
-	  Dropdown: __webpack_require__(51),
-	  SearchableDropdown: __webpack_require__(54)
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.SearchableDropdown = exports.Dropdown = exports.Checkbox = exports.Textarea = exports.Textfield = undefined;
+	
+	var _textfield = __webpack_require__(1);
+	
+	var _textfield2 = _interopRequireDefault(_textfield);
+	
+	var _textarea = __webpack_require__(45);
+	
+	var _textarea2 = _interopRequireDefault(_textarea);
+	
+	var _checkbox = __webpack_require__(48);
+	
+	var _checkbox2 = _interopRequireDefault(_checkbox);
+	
+	var _dropdown = __webpack_require__(51);
+	
+	var _dropdown2 = _interopRequireDefault(_dropdown);
+	
+	var _searchable_dropdown = __webpack_require__(54);
+	
+	var _searchable_dropdown2 = _interopRequireDefault(_searchable_dropdown);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.Textfield = _textfield2.default; // module.exports = {
+	//   Textfield:          require('./src/components/textfield'),
+	//   Textarea:           require('./src/components/textarea'),
+	//   Checkbox:           require('./src/components/checkbox'),
+	//   Dropdown:           require('./src/components/dropdown'),
+	//   SearchableDropdown: require('./src/components/searchable_dropdown'),
+	// };
+	
+	exports.Textarea = _textarea2.default;
+	exports.Checkbox = _checkbox2.default;
+	exports.Dropdown = _dropdown2.default;
+	exports.SearchableDropdown = _searchable_dropdown2.default;
+	exports.default = {
+	  Textfield: _textfield2.default,
+	  Textarea: _textarea2.default,
+	  Checkbox: _checkbox2.default,
+	  Dropdown: _dropdown2.default,
+	  SearchableDropdown: _searchable_dropdown2.default
 	};
 
 /***/ },
