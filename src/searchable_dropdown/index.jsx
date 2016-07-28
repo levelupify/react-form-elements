@@ -14,6 +14,10 @@ class SearchableDropdown extends Component {
     closedByBlur: false,
   };
 
+  constructor(props) {
+    super(props);
+  }
+
   componentWillMount() {
     this.props.setValue(this.props.defaultValue || this.props.value || '');
   }
