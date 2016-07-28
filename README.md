@@ -32,3 +32,31 @@ Then, use them in the `render` method:
 ```
 
 Most components accept the standard props for the HTML elements they represent, ie. **Textfield** accepts `placeholder`, `value` etc.
+
+## Styling
+
+The components can be styled by targetting the class *.lvlp-<name of component>*, for example:
+
+```css
+.lvlp-textfield {
+  background-color: #ddd;
+}
+
+.lvlp-checkbox {
+  border: none;
+}
+```
+
+The class is applied to the outermost HTML element of the component, so if a component adds one or more wrappers around the *actual* form elements you may need to target sub-elements:
+
+```css
+.lvlp-textfield input {
+  background-color: #ddd;
+}
+
+.lvlp-textarea textarea {
+  border: none;
+}
+```
+
+Look at the source or use your browser’s inspect tool to figure out the structure of a given component.
