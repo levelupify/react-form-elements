@@ -32,20 +32,18 @@ module.exports = {
     "no-var": 2,
     "prefer-const": 2,
     "prefer-template": 2,
+    "react/prop-types": 0,
+    "react/no-danger": 0,
 },
   "env": {
     "es6": true,
     "node": true,
     "browser": true,
   },
-  "extends": ["../.eslintrc.js", "eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
   "plugins": [
     "react",
   ],
-  "rules": {
-    "react/prop-types": 0,
-    "react/no-danger": 0,
-  },
   "ecmaFeatures": {
     "blockBindings": true,
     "experimentalObjectRestSpread": true,
