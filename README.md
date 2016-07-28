@@ -1,4 +1,4 @@
-## React Form Elements
+# React Form Elements
 
 This is a set of form elements for React implemented as [Formsy](https://github.com/christianalfoni/formsy-react) components.
 
