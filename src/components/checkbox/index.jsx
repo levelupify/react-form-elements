@@ -6,8 +6,8 @@ import {HOC} from 'formsy-react';
 class Checkbox extends Component {
 
   handleChange = (ev) => {
-    const value = ev.target.value;
-    this.props.setValue(value);
+    const value = ev.target.checked;
+    this.props.setValue();
     if (this.props.onChange) this.props.onChange(value);
   };
 

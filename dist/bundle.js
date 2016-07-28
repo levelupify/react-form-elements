@@ -5507,8 +5507,8 @@
 	    }
 	
 	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Checkbox)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.handleChange = function (ev) {
-	      var value = ev.target.value;
-	      _this.props.setValue(value);
+	      var value = ev.target.checked;
+	      _this.props.setValue();
 	      if (_this.props.onChange) _this.props.onChange(value);
 	    }, _this.handleClick = function (ev) {
 	      if (_this.props.onClick) _this.props.onClick(ev);
