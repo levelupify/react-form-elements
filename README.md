@@ -12,11 +12,13 @@ npm install --save git+ssh://git@github.com:levelupify/react-form-elements.git
 Then import the parts you want to use:
 
 ```js
-import {Textfield} from 'react-form-elements';
-import {Textarea} from 'react-form-elements';
-import {Checkbox} from 'react-form-elements';
-import {Dropdown} from 'react-form-elements';
-import {SearchableDropdown} from 'react-form-elements';
+import {
+  Textfield,
+  Textarea,
+  Checkbox,
+  Dropdown,
+  SearchableDropdown
+} from 'react-form-elements';
 ```
 
 Then, use them in the `render` method:
