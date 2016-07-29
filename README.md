@@ -21,7 +21,7 @@ import {
 } from 'react-form-elements';
 ```
 
-Then, use them in the `render` method:
+Then, use them in the `render` method of your components:
 
 ```html
 <Formsy.Form ...>
